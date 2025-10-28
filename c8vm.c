@@ -219,6 +219,14 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // SHL Vx {, Vy}
+            //Set Vx = Vx SHL 1.
+            // If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
+            if (NN = 0xE) {
+                vm->V[0xF] = vm->V[X] & 0x80;
+                vm->V[X] *= 2;
+                break;
+            }
+
             break;
 
         case 0x9:
