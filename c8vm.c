@@ -143,6 +143,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // then the same bit in the result is also 1. Otherwise, it is 0.
             if (N == 1) {
                 vm->V[X] = vm->V[X] | vm->V[Y];
+                break;
             }
 
             // AND Vx, Vy
@@ -152,6 +153,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // then the same bit in the result is also 1. Otherwise, it is 0.
             if (N == 2) {
                 vm->V[X] = vm->V[X] & vm->V[Y];
+                break;
             }
 
             // XOR Vx, Vy
@@ -161,6 +163,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // then the corresponding bit in the result is set to 1. Otherwise, it is 0.
             if (N == 3) {
                 vm->V[X] = vm->V[X] ^ vm->V[Y];
+                break;
             }
 
             // ADD Vx, Vy
@@ -175,6 +178,7 @@ void VM_ExecutarInstrucao(VM* vm) {
                     vm->V[0xF] = 0;
                 }
                 vm->V[X] = vm->V[X] + vm->V[Y];
+                break;
             }
 
             // SUB Vx, Vy
