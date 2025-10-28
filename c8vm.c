@@ -264,6 +264,35 @@ void VM_ExecutarInstrucao(VM* vm) {
         // TODO: CASO D - DESENHAR NA TELA
         case 0xD:
             // DRW Vx, Vy, nibble
+            // xcoord := VX % DISPLAY_WIDTH
+            // ycoord := VY % DISPLAY_WIDTH
+
+            // // iterate over bytes
+            // for row in 0..N:
+            //     bits := RAM[I + row]
+            //     cy := (ycoord + row) % DISPLAY_HEIGHT
+
+            //     // iterate over bits
+            //     for col in 0..8:
+            //         cx := (xcoord + col) % DISPLAY_WIDTH
+            //         curr_col := DISPLAY[cx, cy]
+            //         // get value of bit
+            //         col := bits & (0x01 << 7 - col)
+            //         // do XOR
+            //         if col > 0:
+            //             if curr_col > 0:
+            //                 DISPLAY[cx, cy] := 0
+            //                 VF = 1
+            //             else:
+            //                 DISPLAY[cx, cy] := 1
+
+            //         if cx == DISPLAY_WIDTH - 1:
+            //             break
+
+            //     if cy == DISPLAY_HEIGTH - 1:
+            //         break
+
+            // update_display()
             break;
 
         // TODO: CASO E - LER TECLADO
@@ -274,6 +303,8 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Skip next instruction if key with the value of Vx is pressed.
             // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
             if (NN == 0x9E) {
+                //if keys[VX] == 1:
+                //    PC := PC + 2
                 break;
             }
 
@@ -281,6 +312,8 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Skip next instruction if key with the value of Vx is not pressed.
             // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
             if (NN == 0xA1) {
+                // if keys[VX] == 0:
+                //  PC := PC + 2
                 break;
             }
 
@@ -302,6 +335,8 @@ void VM_ExecutarInstrucao(VM* vm) {
             // All execution stops until a key is pressed, then the value of that key is stored in Vx.
             if (NN == 0x0A) {
                 // TODO: LER TECLADO
+                // K := wait_input()
+                // VX := K
                 break;
             }
 
@@ -335,6 +370,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // See section 2.4, Display, for more information on the Chip-8 hexadecimal font.
             if (NN == 0x29) {
                 // TODO: SPRITE LOCATION
+                // I := VX * 0x05
                 break;
             }
 
@@ -344,6 +380,15 @@ void VM_ExecutarInstrucao(VM* vm) {
             // the tens digit at location I+1, and the ones digit at location I+2.
             if (NN == 0x33) {
                 // TODO: MEMORY
+                // get hundreds, tens and ones
+                // h := VX / 100
+                // t := (VX - h * 100) / 10
+                // o := VX - h * 100 - t * 10
+
+                // store to memory
+                // RAM[I] := h
+                // RAM[I + 1] := t
+                // RAM[I + 2] := o
                 break;
             }
 
@@ -352,6 +397,8 @@ void VM_ExecutarInstrucao(VM* vm) {
             // The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
             if (NN == 0x35) {
                 // TODO: MEMORY
+                // for reg in 0..X:
+                //  RAM[I + reg] := V[reg]
                 break;
             }
 
@@ -360,6 +407,8 @@ void VM_ExecutarInstrucao(VM* vm) {
             // The interpreter reads values from memory starting at location I into registers V0 through Vx.
             if (NN == 0x65) {
                 // TODO: MEMORY
+                // for reg in 0..X:
+                //  V[reg] := RAM[I + reg]
                 break;
             }
             break;
