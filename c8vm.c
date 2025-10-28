@@ -37,6 +37,7 @@ void VM_ExecutarInstrucao(VM* vm) {
     switch(grupo){
         case 0x0:
             // CLS
+            // Clear the display.
             if (inst == 0x00E0){
                 for(int i = 0; i < 64*32; i++){
                     vm->DISPLAY[i] = 0;
