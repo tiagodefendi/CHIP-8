@@ -205,6 +205,19 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // SUBN Vx, Vy
+            // Set Vx = Vy - Vx, set VF = NOT borrow.
+            // If Vy > Vx, then VF is set to 1, otherwise 0.
+            // Then Vx is subtracted from Vy, and the results stored in Vx.
+            if (NN = 5) {
+                if(vm->V[Y] > vm->V[X]) {
+                    vm->V[0xF] = 1;
+                } else {
+                    vm->V[0xF] = 0;
+                }
+                vm->V[X] = vm->V[Y] - vm->V[X];
+                break;
+            }
+
             // SHL Vx {, Vy}
             break;
 
