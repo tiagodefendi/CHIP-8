@@ -267,11 +267,27 @@ void VM_ExecutarInstrucao(VM* vm) {
             break;
 
         case 0xE:
+            // NN Representa os 8 últimos bits menos signficativos
+
             // SKP Vx
+            // Skip next instruction if key with the value of Vx is pressed.
+            // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
+            if (NN == 0x9E) {
+                break;
+            }
+
             // SKNP Vx
+            // Skip next instruction if key with the value of Vx is not pressed.
+            // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
+            if (NN == 0xA1) {
+                break;
+            }
+
             break;
 
         case 0xF:
+            // NN Representa os 8 últimos bits menos signficativos
+
             // LD Vx, DT
             // LD Vx, K
             // LD DT, Vx
