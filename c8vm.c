@@ -164,6 +164,19 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // ADD Vx, Vy
+            // Set Vx = Vx + Vy, set VF = carry.
+            // The values of Vx and Vy are added together.
+            // If the result is greater than 8 bits (i.e., > 255,) VF is set to 1, otherwise 0.
+            // Only the lowest 8 bits of the result are kept, and stored in Vx.
+            if (N == 4) {
+                if (vm->V[X] + vm->V[Y] > 0xFF) {
+                    vm->V[0xF] = 1;
+                } else {
+                    vm->V[0xF] = 0;
+                }
+                vm->V[X] = vm->V[X] + vm->V[Y];
+            }
+
             // SUB Vx, Vy
             // SHR Vx {, Vy}
             // SUBN Vx, Vy
