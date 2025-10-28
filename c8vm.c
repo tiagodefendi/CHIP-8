@@ -196,6 +196,14 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // SHR Vx {, Vy}
+            // Set Vx = Vx SHR 1.
+            // If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
+            if (NN = 6) {
+                vm->V[0xF] = vm->V[X] & 0x01;
+                vm->V[X] /= 2;
+                break;
+            }
+
             // SUBN Vx, Vy
             // SHL Vx {, Vy}
             break;
