@@ -155,6 +155,14 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // XOR Vx, Vy
+            // Set Vx = Vx XOR Vy.
+            // Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the result in Vx.
+            // An exclusive OR compares the corrseponding bits from two values, and if the bits are not both the same,
+            // then the corresponding bit in the result is set to 1. Otherwise, it is 0.
+            if (N == 3) {
+                vm->V[X] = vm->V[X] ^ vm->V[Y];
+            }
+
             // ADD Vx, Vy
             // SUB Vx, Vy
             // SHR Vx {, Vy}
