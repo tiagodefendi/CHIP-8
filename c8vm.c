@@ -120,6 +120,9 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0x7:
             // ADD Vx, byte
+            // Set Vx = Vx + kk.
+            // Adds the value kk to the value of register Vx, then stores the result in Vx.
+            vm->V[X] += NN;
             break;
 
         case 0x8:
