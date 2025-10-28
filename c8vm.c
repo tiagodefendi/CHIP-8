@@ -27,30 +27,111 @@ void VM_ExecutarInstrucao(VM* vm) {
     printf("Instrução: 0x%04X\n", inst);
     vm->PC += 2;
 
-    uint8_t grupo = inst >> 12;
-    uint8_t X     = (inst & 0x0F00) >> 8;
-    uint8_t Y     = (inst & 0x00F0) >> 4;
-    uint8_t N     = inst & 0x000F;
-    uint8_t NN    = inst & 0x00FF;
-    uint8_t NNN   = inst & 0x0FFF;
+    uint8_t grupo = inst >> 12;           // Grupo (4 bits mais significativos)
+    uint8_t X     = (inst & 0x0F00) >> 8; // Registrador X (4 bits)
+    uint8_t Y     = (inst & 0x00F0) >> 4; // Registrador Y (4 bits)
+    uint8_t N     = inst & 0x000F;        // Nibble (4 bits)
+    uint8_t NN    = inst & 0x00FF;        // Valor de 8 bits
+    uint8_t NNN   = inst & 0x0FFF;        // Endereço de 12 bits
 
     switch(grupo){
-        case 0:
+        case 0x0:
             // CLS
-            if(inst == 0x00E0){
+            if (inst == 0x00E0){
                 for(int i = 0; i < 64*32; i++){
                     vm->DISPLAY[i] = 0;
                 }
                 break;
             }
-
-            case 6:
-                vm->V[X] = NN;
+            // RET
+            if (inst == 0x00EE) {
                 break;
+            }
+            // SYS addr
 
-            default:
-                printf("Grupo não implementado! Instrução: 0x%04X\n", inst);
-                exit(1); // stdlib
+        case 0x1:
+            // JP addr
+            break;
+
+        case 0x2:
+            // CALL addr
+            break;
+
+        case 0x3:
+            // SE Vx, byte
+            break;
+
+        case 0x4:
+            // SNE Vx, byte
+            break;
+
+        case 0x5:
+            // SE Vx, Vy
+            break;
+
+        case 0x6:
+            // LD Vx, byte
+            vm->V[X] = NN;
+            break;
+
+        case 0x7:
+            // ADD Vx, byte
+            break;
+
+        case 0x8:
+            // LD Vx, Vy
+            // OR Vx, Vy
+            // AND Vx, Vy
+            // XOR Vx, Vy
+            // ADD Vx, Vy
+            // SUB Vx, Vy
+            // SHR Vx {, Vy}
+            // SUBN Vx, Vy
+            // SHL Vx {, Vy}
+            break;
+
+        case 0x9:
+            // SNE Vx, Vy
+            break;
+
+        case 0xA:
+            // LD I, addr
+            break;
+
+        case 0xB:
+            // JP V0, addr
+            break;
+
+        case 0xC:
+            // RND Vx, byte
+            break;
+
+
+        // TODO: DESENHAR NA TELA
+        case 0xD:
+            // DRW Vx, Vy, nibble
+            break;
+
+        case 0xE:
+            // SKP Vx
+            // SKNP Vx
+            break;
+
+        case 0xF:
+            // LD Vx, DT
+            // LD Vx, K
+            // LD DT, Vx
+            // LD ST, Vx
+            // ADD I, Vx
+            // LD F, Vx
+            // LD B, Vx
+            // LD [I], Vx
+            // LD Vx, [I]
+            break;
+
+        default:
+            printf("Grupo não implementado! Instrução: 0x%04X\n", inst);
+            exit(1); // stdlib
     }
 }
 
