@@ -298,6 +298,13 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // LD Vx, K
+            // Wait for a key press, store the value of the key in Vx.
+            // All execution stops until a key is pressed, then the value of that key is stored in Vx.
+            if (NN = 0X0A) {
+                // TODO: LER TECLADO
+                break;
+            }
+
             // LD DT, Vx
             // LD ST, Vx
             // ADD I, Vx
