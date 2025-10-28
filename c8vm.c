@@ -113,6 +113,8 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0x6:
             // LD Vx, byte
+            // Set Vx = kk.
+            // The interpreter puts the value kk into register Vx.
             vm->V[X] = NN;
             break;
 
