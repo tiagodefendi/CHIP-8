@@ -185,7 +185,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Set Vx = Vx - Vy, set VF = NOT borrow.
             // If Vx > Vy, then VF is set to 1, otherwise 0.
             // Then Vy is subtracted from Vx, and the results stored in Vx.
-            if (NN = 0x5) {
+            if (NN == 0x5) {
                 if(vm->V[X] > vm->V[Y]) {
                     vm->V[0xF] = 1;
                 } else {
@@ -198,7 +198,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // SHR Vx {, Vy}
             // Set Vx = Vx SHR 1.
             // If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
-            if (NN = 0x6) {
+            if (NN == 0x6) {
                 vm->V[0xF] = vm->V[X] & 0x01;
                 vm->V[X] >>= 2;
                 break;
@@ -208,7 +208,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Set Vx = Vy - Vx, set VF = NOT borrow.
             // If Vy > Vx, then VF is set to 1, otherwise 0.
             // Then Vx is subtracted from Vy, and the results stored in Vx.
-            if (NN = 0x7) {
+            if (NN == 0x7) {
                 if(vm->V[Y] > vm->V[X]) {
                     vm->V[0xF] = 1;
                 } else {
@@ -221,7 +221,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // SHL Vx {, Vy}
             //Set Vx = Vx SHL 1.
             // If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
-            if (NN = 0xE) {
+            if (NN == 0xE) {
                 vm->V[0xF] = vm->V[X] & 0x80;
                 vm->V[X] <<= 1;
                 break;
@@ -300,7 +300,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // LD Vx, K
             // Wait for a key press, store the value of the key in Vx.
             // All execution stops until a key is pressed, then the value of that key is stored in Vx.
-            if (NN = 0x0A) {
+            if (NN == 0x0A) {
                 // TODO: LER TECLADO
                 break;
             }
@@ -308,7 +308,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // LD DT, Vx
             // Set delay timer = Vx.
             // DT is set equal to the value of Vx.
-            if (NN = 0x15) {
+            if (NN == 0x15) {
                 vm->delay_timer = vm->V[X];
                 break;
             }
@@ -316,7 +316,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // LD ST, Vx
             // Set sound timer = Vx.
             // ST is set equal to the value of Vx.
-            if (NN = 0x18) {
+            if (NN == 0x18) {
                 vm->sound_timer = vm->V[X];
                 break;
             }
@@ -324,7 +324,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // ADD I, Vx
             // Set I = I + Vx.
             // The values of I and Vx are added, and the results are stored in I.
-            if (NN = 0x1E) {
+            if (NN == 0x1E) {
                 vm->I += vm->V[X];
                 break;
             }
@@ -333,7 +333,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Set I = location of sprite for digit Vx.
             // The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx.
             // See section 2.4, Display, for more information on the Chip-8 hexadecimal font.
-            if (NN = 0x29) {
+            if (NN == 0x29) {
                 // TODO: SPRITE LOCATION
                 break;
             }
@@ -342,12 +342,26 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Store BCD representation of Vx in memory locations I, I+1, and I+2.
             // The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I,
             // the tens digit at location I+1, and the ones digit at location I+2.
-            if (NN = 0x33) {
+            if (NN == 0x33) {
                 // TODO: MEMORY
+                break;
             }
 
             // LD [I], Vx
+            // Store registers V0 through Vx in memory starting at location I.
+            // The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
+            if (NN == 0x35) {
+                // TODO: MEMORY
+                break;
+            }
+
             // LD Vx, [I]
+            // Read registers V0 through Vx from memory starting at location I.
+            // The interpreter reads values from memory starting at location I into registers V0 through Vx.
+            if (NN == 0x65) {
+                // TODO: MEMORY
+                break;
+            }
             break;
 
         default:
