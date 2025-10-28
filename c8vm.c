@@ -330,6 +330,14 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // LD F, Vx
+            // Set I = location of sprite for digit Vx.
+            // The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx.
+            // See section 2.4, Display, for more information on the Chip-8 hexadecimal font.
+            if (NN = 0x29) {
+                // TODO: SPRITE LOCATION
+                break;
+            }
+
             // LD B, Vx
             // LD [I], Vx
             // LD Vx, [I]
