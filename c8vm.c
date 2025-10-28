@@ -247,6 +247,9 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0xB:
             // JP V0, addr
+            // Jump to location nnn + V0.
+            // The program counter is set to nnn plus the value of V0.
+            vm->PC = NNN + vm->V[0x0];
             break;
 
         case 0xC:
