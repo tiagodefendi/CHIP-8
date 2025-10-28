@@ -79,20 +79,23 @@ void VM_ExecutarInstrucao(VM* vm) {
             vm->PC = NNN;
             break;
 
+
         case 0x3:
             // SE Vx, byte
             // Skip next instruction if Vx = kk.
-            // The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
+            // The interpreter compares register Vx to kk, and if they are equal,
+            // increments the program counter by 2.
             if (vm->V[X] == NN) {
                 vm->PC += 2;
             }
             break;
 
-            
+
         case 0x4:
             // SNE Vx, byte
             // Skip next instruction if Vx != kk.
-            // The interpreter compares register Vx to kk, and if they are not equal, increments the program counter by 2.
+            // The interpreter compares register Vx to kk, and if they are not equal,
+            // increments the program counter by 2.
             if (vm->V[X] != NN) {
                 vm->PC += 2;
             }
@@ -100,6 +103,12 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0x5:
             // SE Vx, Vy
+            // Skip next instruction if Vx = Vy.
+            // The interpreter compares register Vx to register Vy, and if they are equal,
+            // increments the program counter by 2.
+            if (vm->V[X] == vm->V[Y]) {
+                vm->PC += 2;
+            }
             break;
 
         case 0x6:
