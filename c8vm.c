@@ -45,10 +45,21 @@ void VM_ExecutarInstrucao(VM* vm) {
                 break;
             }
             // RET
+            // Return from a subroutine.
+            // The interpreter sets the program counter to the address at the top of the stack,
+            // then subtracts 1 from the stack pointer.
             if (inst == 0x00EE) {
+                vm->PC = vm->stack[vm->SP];
+                vm->SP--;
                 break;
             }
+
             // SYS addr
+            // Jump to a machine code routine at nnn.
+            // This instruction is only used on the old computers on which Chip-8 was originally implemented.
+            // It is ignored by modern interpreters.
+            break;
+
 
         case 0x1:
             // JP addr
