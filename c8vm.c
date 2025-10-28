@@ -63,7 +63,11 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0x1:
             // JP addr
+            // Jump to location nnn.
+            // The interpreter sets the program counter to nnn.
+            vm->PC = NNN;
             break;
+
 
         case 0x2:
             // CALL addr
