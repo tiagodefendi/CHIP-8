@@ -231,6 +231,11 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0x9:
             // SNE Vx, Vy
+            // Skip next instruction if Vx != Vy.
+            // The values of Vx and Vy are compared, and if they are not equal, the program counter is increased by 2.
+            if (vm->V[X] != vm->V[Y]) {
+                vm->PC += 2;
+            }
             break;
 
         case 0xA:
