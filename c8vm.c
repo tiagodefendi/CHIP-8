@@ -71,6 +71,12 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0x2:
             // CALL addr
+            // Call subroutine at nnn.
+            // The interpreter increments the stack pointer, then puts the current PC on the top of the stack.
+            // The PC is then set to nnn.
+            vm->SP++;
+            vm->stack[vm->SP] = vm->PC;
+            vm->PC = NNN;
             break;
 
         case 0x3:
