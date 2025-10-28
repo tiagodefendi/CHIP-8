@@ -146,6 +146,14 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // AND Vx, Vy
+            // Set Vx = Vx AND Vy.
+            // Performs a bitwise AND on the values of Vx and Vy, then stores the result in Vx.
+            // A bitwise AND compares the corrseponding bits from two values, and if both bits are 1,
+            // then the same bit in the result is also 1. Otherwise, it is 0.
+            if (N == 2) {
+                vm->V[X] = vm->V[X] & vm->V[Y];
+            }
+
             // XOR Vx, Vy
             // ADD Vx, Vy
             // SUB Vx, Vy
