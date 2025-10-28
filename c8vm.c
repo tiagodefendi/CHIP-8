@@ -126,7 +126,16 @@ void VM_ExecutarInstrucao(VM* vm) {
             break;
 
         case 0x8:
+            // N Representa os 4 últimos bits menos signficativos
+
             // LD Vx, Vy
+            // Set Vx = Vy.
+            // Stores the value of register Vy in register Vx.
+            if (N == 0) {
+                vm->V[X] = vm->V[Y];
+                break;
+            }
+
             // OR Vx, Vy
             // AND Vx, Vy
             // XOR Vx, Vy
