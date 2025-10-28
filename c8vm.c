@@ -261,11 +261,12 @@ void VM_ExecutarInstrucao(VM* vm) {
             break;
 
 
-        // TODO: DESENHAR NA TELA
+        // TODO: CASO D - DESENHAR NA TELA
         case 0xD:
             // DRW Vx, Vy, nibble
             break;
 
+        // TODO: CASO E - LER TECLADO
         case 0xE:
             // NN Representa os 8 últimos bits menos signficativos
 
@@ -289,6 +290,13 @@ void VM_ExecutarInstrucao(VM* vm) {
             // NN Representa os 8 últimos bits menos signficativos
 
             // LD Vx, DT
+            // Set Vx = delay timer value.
+            // The value of DT is placed into Vx.
+            if (NN == 0x07) {
+                vm->V[X] = vm->delay_timer;
+                break;
+            }
+
             // LD Vx, K
             // LD DT, Vx
             // LD ST, Vx
