@@ -254,6 +254,10 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0xC:
             // RND Vx, byte
+            // Set Vx = random byte AND kk.
+            // The interpreter generates a random number from 0 to 255, which is then ANDed with the value kk.
+            // The results are stored in Vx. See instruction 8xy2 for more information on AND.
+            vm->V[X] = (rand() % 0xFF) & NN;
             break;
 
 
