@@ -314,6 +314,13 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // LD ST, Vx
+            // Set sound timer = Vx.
+            // ST is set equal to the value of Vx.
+            if (NN = 0x18) {
+                vm->sound_timer = vm->V[X];
+                break;
+            }
+
             // ADD I, Vx
             // LD F, Vx
             // LD B, Vx
