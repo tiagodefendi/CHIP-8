@@ -322,6 +322,13 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             // ADD I, Vx
+            // Set I = I + Vx.
+            // The values of I and Vx are added, and the results are stored in I.
+            if (NN = 0x1E) {
+                vm->I += vm->V[X];
+                break;
+            }
+
             // LD F, Vx
             // LD B, Vx
             // LD [I], Vx
