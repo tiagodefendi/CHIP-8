@@ -240,6 +240,9 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0xA:
             // LD I, addr
+            // Set I = nnn.
+            // The value of register I is set to nnn.
+            vm->I = NNN;
             break;
 
         case 0xB:
