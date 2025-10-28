@@ -300,12 +300,19 @@ void VM_ExecutarInstrucao(VM* vm) {
             // LD Vx, K
             // Wait for a key press, store the value of the key in Vx.
             // All execution stops until a key is pressed, then the value of that key is stored in Vx.
-            if (NN = 0X0A) {
+            if (NN = 0x0A) {
                 // TODO: LER TECLADO
                 break;
             }
 
             // LD DT, Vx
+            // Set delay timer = Vx.
+            // DT is set equal to the value of Vx.
+            if (NN = 0x15) {
+                vm->delay_timer = vm->V[X];
+                break;
+            }
+
             // LD ST, Vx
             // ADD I, Vx
             // LD F, Vx
