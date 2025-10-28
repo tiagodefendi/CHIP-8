@@ -81,6 +81,11 @@ void VM_ExecutarInstrucao(VM* vm) {
 
         case 0x3:
             // SE Vx, byte
+            // Skip next instruction if Vx = kk.
+            // The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
+            if (vm->V[X] == NN) {
+                vm->PC += 2;
+            }
             break;
 
         case 0x4:
