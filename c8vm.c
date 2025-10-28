@@ -131,7 +131,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // LD Vx, Vy
             // Set Vx = Vy.
             // Stores the value of register Vy in register Vx.
-            if (N == 0) {
+            if (N == 0x0) {
                 vm->V[X] = vm->V[Y];
                 break;
             }
@@ -141,7 +141,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Performs a bitwise OR on the values of Vx and Vy, then stores the result in Vx.
             // A bitwise OR compares the corrseponding bits from two values, and if either bit is 1,
             // then the same bit in the result is also 1. Otherwise, it is 0.
-            if (N == 1) {
+            if (N == 0x1) {
                 vm->V[X] = vm->V[X] | vm->V[Y];
                 break;
             }
@@ -151,7 +151,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Performs a bitwise AND on the values of Vx and Vy, then stores the result in Vx.
             // A bitwise AND compares the corrseponding bits from two values, and if both bits are 1,
             // then the same bit in the result is also 1. Otherwise, it is 0.
-            if (N == 2) {
+            if (N == 0x2) {
                 vm->V[X] = vm->V[X] & vm->V[Y];
                 break;
             }
@@ -161,7 +161,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Performs a bitwise exclusive OR on the values of Vx and Vy, then stores the result in Vx.
             // An exclusive OR compares the corrseponding bits from two values, and if the bits are not both the same,
             // then the corresponding bit in the result is set to 1. Otherwise, it is 0.
-            if (N == 3) {
+            if (N == 0x3) {
                 vm->V[X] = vm->V[X] ^ vm->V[Y];
                 break;
             }
@@ -171,7 +171,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // The values of Vx and Vy are added together.
             // If the result is greater than 8 bits (i.e., > 255,) VF is set to 1, otherwise 0.
             // Only the lowest 8 bits of the result are kept, and stored in Vx.
-            if (N == 4) {
+            if (N == 0x4) {
                 if (vm->V[X] + vm->V[Y] > 0xFF) {
                     vm->V[0xF] = 1;
                 } else {
@@ -185,7 +185,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Set Vx = Vx - Vy, set VF = NOT borrow.
             // If Vx > Vy, then VF is set to 1, otherwise 0.
             // Then Vy is subtracted from Vx, and the results stored in Vx.
-            if (NN = 5) {
+            if (NN = 0x5) {
                 if(vm->V[X] > vm->V[Y]) {
                     vm->V[0xF] = 1;
                 } else {
@@ -198,7 +198,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // SHR Vx {, Vy}
             // Set Vx = Vx SHR 1.
             // If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
-            if (NN = 6) {
+            if (NN = 0x6) {
                 vm->V[0xF] = vm->V[X] & 0x01;
                 vm->V[X] /= 2;
                 break;
@@ -208,7 +208,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Set Vx = Vy - Vx, set VF = NOT borrow.
             // If Vy > Vx, then VF is set to 1, otherwise 0.
             // Then Vx is subtracted from Vy, and the results stored in Vx.
-            if (NN = 5) {
+            if (NN = 0x7) {
                 if(vm->V[Y] > vm->V[X]) {
                     vm->V[0xF] = 1;
                 } else {
