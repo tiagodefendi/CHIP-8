@@ -1,1 +1,7 @@
 #define DEBUG 1
+
+#define DISPLAY_WIDTH 64
+#define DISPLAY_HEIGHT 32
+
+#define TARGET_FPS 60
+#define FRAME_DELAY (1000 / TARGET_FPS)
