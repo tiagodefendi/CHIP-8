@@ -4,9 +4,18 @@
 #include "defs.h"
 #include <SDL2/SDL.h>
 #include "keyboard_map.h"
+#include "sprite_digits.h"
 
 void VM_Inicializar(VM* vm, uint16_t pc_inicial) {
     vm->PC = pc_inicial;
+
+    // Pré-carregar na memória os sprites dos dígitos hexadecimais (0-F)
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 5; j++) {
+            vm->RAM[i * 5 + j] = sprite_digits[i * 5 + j];
+        }
+    }
+    // Pré-carregar na memória os sprites dos dígitos hexadecimais (0-F)
 }
 
 int VM_CarregarROM(VM* vm,
