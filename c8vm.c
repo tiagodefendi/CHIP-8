@@ -1,6 +1,9 @@
 #include "c8vm.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "defs.h"
+#include <SDL2/SDL.h>
+#include "keyboard_map.h"
 
 void VM_Inicializar(VM* vm, uint16_t pc_inicial) {
     vm->PC = pc_inicial;
@@ -272,6 +275,16 @@ void VM_ExecutarInstrucao(VM* vm) {
         // TODO: CASO D - DESENHAR NA TELA
         case 0xD:
             // DRW Vx, Vy, nibble
+            // Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
+            // The interpreter reads n bytes from memory, starting at the address stored in I.
+            // These bytes are then displayed as sprites on screen at coordinates (Vx, Vy).
+            // Sprites are XORed onto the existing screen.
+            // If this causes any pixels to be erased, VF is set to 1, otherwise it is set to 0.
+            // If the sprite is positioned so part of it is outside the coordinates of the display,
+            // it wraps around to the opposite side of the screen.
+            // See instruction 8xy3 for more information on XOR, and section 2.4, Display,
+            // for more information on the Chip-8 screen and sprites.
+
             // xcoord := VX % DISPLAY_WIDTH
             // ycoord := VY % DISPLAY_WIDTH
 
@@ -301,6 +314,36 @@ void VM_ExecutarInstrucao(VM* vm) {
             //         break
 
             // update_display()
+            uint8_t xcoord = vm->V[X] % DISPLAY_WIDTH;
+            uint8_t ycoord = vm->V[Y] % DISPLAY_HEIGHT;
+            for (int row = 0; row < N; row++) {
+                uint8_t bits = vm->RAM[vm->I + row];
+                uint8_t cy = (ycoord + row) % DISPLAY_HEIGHT;
+
+                for (int col = 0; col < 8; col++) {
+                    uint8_t cx = (xcoord + col) % DISPLAY_WIDTH;
+                    uint8_t curr_col = vm->DISPLAY[cy * DISPLAY_WIDTH + cx];
+                    uint8_t bit = bits & (0x01 << (7 - col));
+
+                    if (bit > 0) {
+                        if (curr_col > 0) {
+                            vm->DISPLAY[cy * DISPLAY_WIDTH + cx] = 0;
+                            vm->V[0xF] = 1;
+                        } else {
+                            vm->DISPLAY[cy * DISPLAY_WIDTH + cx] = 1;
+                        }
+                    }
+
+                    if (cx == DISPLAY_WIDTH - 1) {
+                        break;
+                    }
+                }
+
+                if (cy == DISPLAY_HEIGHT - 1) {
+                    break;
+                }
+            }
+            vm->draw_flag = 1;
             break;
 
 
@@ -312,8 +355,12 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Skip next instruction if key with the value of Vx is pressed.
             // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
             if (NN == 0x9E) {
-                //if keys[VX] == 1:
-                //    PC := PC + 2
+                // if keys[VX] == 1:
+                //  PC := PC + 2
+                const Uint8* keyboard = SDL_GetKeyboardState(NULL);
+                if (keyboard[map_reverse_scancodes(vm->V[X])]) {
+                    vm->PC += 2;
+                }
                 break;
             }
 
@@ -323,9 +370,12 @@ void VM_ExecutarInstrucao(VM* vm) {
             if (NN == 0xA1) {
                 // if keys[VX] == 0:
                 //  PC := PC + 2
+                const Uint8* keyboard = SDL_GetKeyboardState(NULL);
+                if (!keyboard[map_reverse_scancodes(vm->V[X])]) {
+                    vm->PC += 2;
+                }
                 break;
             }
-
             break;
 
 
@@ -347,6 +397,18 @@ void VM_ExecutarInstrucao(VM* vm) {
                 // TODO: LER TECLADO
                 // K := wait_input()
                 // VX := K
+                SDL_Event e;
+                int quit = 0;
+                while (!quit) {
+                    if (SDL_PollEvent(&e)) {
+                        if (e.type == SDL_KEYDOWN) {
+                            if (map_keyboard_keys(e.key.keysym.sym) != 0xFF) {
+                                vm->V[X] = map_keyboard_keys(e.key.keysym.sym);
+                                quit = 1;
+                            }
+                        }
+                    }
+                }
                 break;
             }
 
@@ -381,6 +443,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             if (NN == 0x29) {
                 // TODO: SPRITE LOCATION
                 // I := VX * 0x05
+                vm->I = vm->V[X] * 0x05;
                 break;
             }
 
@@ -399,6 +462,12 @@ void VM_ExecutarInstrucao(VM* vm) {
                 // RAM[I] := h
                 // RAM[I + 1] := t
                 // RAM[I + 2] := o
+                uint8_t h = vm->V[X] / 100;
+                uint8_t t = (vm->V[X] - h * 100) / 10;
+                uint8_t o = vm->V[X] - h * 100 - t * 10;
+                vm->RAM[vm->I] = h;
+                vm->RAM[vm->I + 1] = t;
+                vm->RAM[vm->I + 2] = o;
                 break;
             }
 
@@ -409,6 +478,9 @@ void VM_ExecutarInstrucao(VM* vm) {
                 // TODO: MEMORY
                 // for reg in 0..X:
                 //  RAM[I + reg] := V[reg]
+                for (int reg = 0; reg <= X; reg++) {
+                    vm->RAM[vm->I + reg] = vm->V[reg];
+                }
                 break;
             }
 
@@ -419,6 +491,9 @@ void VM_ExecutarInstrucao(VM* vm) {
                 // TODO: MEMORY
                 // for reg in 0..X:
                 //  V[reg] := RAM[I + reg]
+                for (int reg = 0; reg <= X; reg++) {
+                    vm->V[reg] = vm->RAM[vm->I + reg];
+                }
                 break;
             }
             break;
