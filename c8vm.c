@@ -9,11 +9,16 @@ void VM_Inicializar(VM* vm, uint16_t pc_inicial) {
     vm->PC = pc_inicial;
 }
 
-void VM_CarregarROM(VM* vm,
+int VM_CarregarROM(VM* vm,
                     char* arq_rom,
                     uint16_t pc_inicial) {
 
     FILE* rom = fopen(arq_rom, "rb");
+    // Verifica se o arquivo foi aberto corretamente
+    if (!rom) {
+        printf("Erro ao abrir o arquivo ROM: %s\n", arq_rom);
+        return 0;
+    }
     fseek(rom, 0, SEEK_END);
     long tam_rom = ftell(rom);
     rewind(rom);
@@ -21,6 +26,7 @@ void VM_CarregarROM(VM* vm,
     fread(&vm->RAM[pc_inicial], 1, tam_rom, rom);
 
     fclose(rom);
+    return 1;
 }
 
 void VM_ExecutarInstrucao(VM* vm) {
@@ -312,7 +318,6 @@ void VM_ExecutarInstrucao(VM* vm) {
                     break;
                 }
             }
-            vm->draw_flag = 1;
             break;
 
 

@@ -5,3 +5,10 @@
 
 #define TARGET_FPS 60
 #define FRAME_DELAY (1000 / TARGET_FPS)
+
+#define CPU_HZ 500
+#define CYCLE_DELAY (1000 / CPU_HZ)
+
+#define SCALE 10
+
+#define PROG_START 0x200
