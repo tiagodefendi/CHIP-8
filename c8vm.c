@@ -101,6 +101,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
             break;
 
+
         case 0x5:
             // SE Vx, Vy
             // Skip next instruction if Vx = Vy.
@@ -111,6 +112,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
             break;
 
+
         case 0x6:
             // LD Vx, byte
             // Set Vx = kk.
@@ -118,12 +120,14 @@ void VM_ExecutarInstrucao(VM* vm) {
             vm->V[X] = NN;
             break;
 
+
         case 0x7:
             // ADD Vx, byte
             // Set Vx = Vx + kk.
             // Adds the value kk to the value of register Vx, then stores the result in Vx.
             vm->V[X] += NN;
             break;
+
 
         case 0x8:
             // N Representa os 4 últimos bits menos signficativos
@@ -229,6 +233,7 @@ void VM_ExecutarInstrucao(VM* vm) {
 
             break;
 
+
         case 0x9:
             // SNE Vx, Vy
             // Skip next instruction if Vx != Vy.
@@ -238,6 +243,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
             break;
 
+
         case 0xA:
             // LD I, addr
             // Set I = nnn.
@@ -245,12 +251,14 @@ void VM_ExecutarInstrucao(VM* vm) {
             vm->I = NNN;
             break;
 
+
         case 0xB:
             // JP V0, addr
             // Jump to location nnn + V0.
             // The program counter is set to nnn plus the value of V0.
             vm->PC = NNN + vm->V[0x0];
             break;
+
 
         case 0xC:
             // RND Vx, byte
@@ -295,6 +303,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // update_display()
             break;
 
+
         // TODO: CASO E - LER TECLADO
         case 0xE:
             // NN Representa os 8 últimos bits menos signficativos
@@ -318,6 +327,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             }
 
             break;
+
 
         case 0xF:
             // NN Representa os 8 últimos bits menos signficativos
@@ -412,6 +422,7 @@ void VM_ExecutarInstrucao(VM* vm) {
                 break;
             }
             break;
+
 
         default:
             printf("Grupo não implementado! Instrução: 0x%04X\n", inst);
