@@ -10,6 +10,7 @@ void VM_Inicializar(VM* vm, uint16_t pc_inicial) {
     vm->PC = pc_inicial;
 
     // Pré-carregar na memória os sprites dos dígitos hexadecimais (0-F)
+    // Os sprites para os dígitos hexadecimais (0-F) devem ser pré-carregados na memória, começando no endereço 0x000.
     for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 5; j++) {
             vm->RAM[i * 5 + j] = sprite_digits[i * 5 + j];
