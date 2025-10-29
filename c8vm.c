@@ -272,7 +272,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             break;
 
 
-        // TODO: CASO D - DESENHAR NA TELA
         case 0xD:
             // DRW Vx, Vy, nibble
             // Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
@@ -284,36 +283,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             // it wraps around to the opposite side of the screen.
             // See instruction 8xy3 for more information on XOR, and section 2.4, Display,
             // for more information on the Chip-8 screen and sprites.
-
-            // xcoord := VX % DISPLAY_WIDTH
-            // ycoord := VY % DISPLAY_WIDTH
-
-            // // iterate over bytes
-            // for row in 0..N:
-            //     bits := RAM[I + row]
-            //     cy := (ycoord + row) % DISPLAY_HEIGHT
-
-            //     // iterate over bits
-            //     for col in 0..8:
-            //         cx := (xcoord + col) % DISPLAY_WIDTH
-            //         curr_col := DISPLAY[cx, cy]
-            //         // get value of bit
-            //         col := bits & (0x01 << 7 - col)
-            //         // do XOR
-            //         if col > 0:
-            //             if curr_col > 0:
-            //                 DISPLAY[cx, cy] := 0
-            //                 VF = 1
-            //             else:
-            //                 DISPLAY[cx, cy] := 1
-
-            //         if cx == DISPLAY_WIDTH - 1:
-            //             break
-
-            //     if cy == DISPLAY_HEIGTH - 1:
-            //         break
-
-            // update_display()
             uint8_t xcoord = vm->V[X] % DISPLAY_WIDTH;
             uint8_t ycoord = vm->V[Y] % DISPLAY_HEIGHT;
             for (int row = 0; row < N; row++) {
@@ -347,7 +316,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             break;
 
 
-        // TODO: CASO E - LER TECLADO
         case 0xE:
             // NN Representa os 8 últimos bits menos signficativos
 
@@ -355,8 +323,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Skip next instruction if key with the value of Vx is pressed.
             // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, PC is increased by 2.
             if (NN == 0x9E) {
-                // if keys[VX] == 1:
-                //  PC := PC + 2
                 const Uint8* keyboard = SDL_GetKeyboardState(NULL);
                 if (keyboard[map_reverse_scancodes(vm->V[X])]) {
                     vm->PC += 2;
@@ -368,8 +334,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Skip next instruction if key with the value of Vx is not pressed.
             // Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, PC is increased by 2.
             if (NN == 0xA1) {
-                // if keys[VX] == 0:
-                //  PC := PC + 2
                 const Uint8* keyboard = SDL_GetKeyboardState(NULL);
                 if (!keyboard[map_reverse_scancodes(vm->V[X])]) {
                     vm->PC += 2;
@@ -394,9 +358,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Wait for a key press, store the value of the key in Vx.
             // All execution stops until a key is pressed, then the value of that key is stored in Vx.
             if (NN == 0x0A) {
-                // TODO: LER TECLADO
-                // K := wait_input()
-                // VX := K
                 SDL_Event e;
                 int quit = 0;
                 while (!quit) {
@@ -441,8 +402,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             // The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx.
             // See section 2.4, Display, for more information on the Chip-8 hexadecimal font.
             if (NN == 0x29) {
-                // TODO: SPRITE LOCATION
-                // I := VX * 0x05
                 vm->I = vm->V[X] * 0x05;
                 break;
             }
@@ -452,16 +411,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             // The interpreter takes the decimal value of Vx, and places the hundreds digit in memory at location in I,
             // the tens digit at location I+1, and the ones digit at location I+2.
             if (NN == 0x33) {
-                // TODO: MEMORY
-                // get hundreds, tens and ones
-                // h := VX / 100
-                // t := (VX - h * 100) / 10
-                // o := VX - h * 100 - t * 10
-
-                // store to memory
-                // RAM[I] := h
-                // RAM[I + 1] := t
-                // RAM[I + 2] := o
                 uint8_t h = vm->V[X] / 100;
                 uint8_t t = (vm->V[X] - h * 100) / 10;
                 uint8_t o = vm->V[X] - h * 100 - t * 10;
@@ -475,9 +424,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Store registers V0 through Vx in memory starting at location I.
             // The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
             if (NN == 0x35) {
-                // TODO: MEMORY
-                // for reg in 0..X:
-                //  RAM[I + reg] := V[reg]
                 for (int reg = 0; reg <= X; reg++) {
                     vm->RAM[vm->I + reg] = vm->V[reg];
                 }
@@ -488,9 +434,6 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Read registers V0 through Vx from memory starting at location I.
             // The interpreter reads values from memory starting at location I into registers V0 through Vx.
             if (NN == 0x65) {
-                // TODO: MEMORY
-                // for reg in 0..X:
-                //  V[reg] := RAM[I + reg]
                 for (int reg = 0; reg <= X; reg++) {
                     vm->V[reg] = vm->RAM[vm->I + reg];
                 }
