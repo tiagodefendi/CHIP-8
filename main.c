@@ -5,12 +5,9 @@
 #include "audio.h"
 #include "help.h"
 
-// TODO: A tela deve ser atualizada a uma taxa de 60Hz, independentemente da velocidade da CPU
-
-// TODO: Os temporizadores (Delay Timer e Sound Timer) devem decrementar a uma taxa de 60Hz.
-
 int main(int argc, char *argv[]) {
     // Configurações iniciais
+    int frame_hz = TARGET_FPS; // Frames por segundo
     int cpu_hz = CPU_HZ; // Frequência da CPU em Hz
     int scale = SCALE; // Fator de escala da janela
     int prog_start = PROG_START; // Endereço inicial do programa na memória
@@ -41,7 +38,12 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    int cycle_delay = 1000 / cpu_hz;
+    // Calcula a duração dos frames e ciclos da CPU em milissegundos
+    double frame_duration = 1000.0 / frame_hz;
+    double cpu_cycle_duration = 1000.0 / cpu_hz;
+    double frame_accumulator = 0.0;
+    double cpu_accumulator = 0.0;
+    uint32_t last_time = SDL_GetTicks();
 
     // Iniciar VM
     VM vm;
@@ -85,10 +87,14 @@ int main(int argc, char *argv[]) {
     int quit = 0;
     // loop principal
     while (!quit) {
-        // receber o tempo de inicio do frame
-        int frame_start = SDL_GetTicks();
-        // receber o tempo de inicio para cpu
-        int cpu_start = SDL_GetTicks();
+        // Calcula tempo gasto na execução do laço
+        uint32_t current_time = SDL_GetTicks();
+        double delta_time = current_time - last_time;
+        last_time = current_time;
+
+        // Incrementa os acumuladores
+        frame_accumulator += delta_time;
+        cpu_accumulator += delta_time;
 
         // input de eventos =================================================================
         while (SDL_PollEvent(&e) != 0) {
@@ -101,11 +107,14 @@ int main(int argc, char *argv[]) {
         }
 
         // update ==========================================================================
-        int current_cpu_time = SDL_GetTicks();
-        if (cycle_delay > SDL_GetTicks() - cpu_start) {
-            SDL_Delay(cycle_delay - (SDL_GetTicks() - current_cpu_time));
+
+        while (cpu_accumulator >= cpu_cycle_duration) {
+            // Executa uma instrução da VM
+            VM_ExecutarInstrucao(&vm);
+            // Decrementa o acumulador de CPU
+            cpu_accumulator -= cpu_cycle_duration;
         }
-        VM_ExecutarInstrucao(&vm);
+
         #ifdef DEBUG
         VM_ImprimirRegistradores(&vm);
         #endif
@@ -115,9 +124,7 @@ int main(int argc, char *argv[]) {
         draw_display(&vm, renderer, scale);
 
         // controlar o fps =================================================================
-        int current_frame = SDL_GetTicks();
-        if (FRAME_DELAY > SDL_GetTicks() - frame_start) {
-            SDL_Delay(FRAME_DELAY - (SDL_GetTicks() - current_frame));
+        if (frame_accumulator >= frame_duration) {
 
             // delay timer
             if (vm.delay_timer > 0) {
@@ -133,6 +140,9 @@ int main(int argc, char *argv[]) {
             } else {
                 stop_sound(audio_device);
             }
+
+            // Decrementa o acumulador de frame
+            frame_accumulator -= frame_duration;
         }
     }
 
