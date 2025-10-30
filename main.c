@@ -39,8 +39,8 @@ int main(int argc, char *argv[]) {
     }
 
     // Calcula a duração dos frames e ciclos da CPU em milissegundos
-    double frame_duration = 1000.0 / frame_hz;
-    double cpu_cycle_duration = 1000.0 / cpu_hz;
+    const double frame_duration = 1000.0 / frame_hz;
+    const double cpu_cycle_duration = 1000.0 / cpu_hz;
     double frame_accumulator = 0.0;
     double cpu_accumulator = 0.0;
     uint32_t last_time = SDL_GetTicks();
@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
 
         // update ==========================================================================
 
+        // Executa ciclos da CPU conforme o acumulador
         while (cpu_accumulator >= cpu_cycle_duration) {
             // Executa uma instrução da VM
             VM_ExecutarInstrucao(&vm);
@@ -145,6 +146,13 @@ int main(int argc, char *argv[]) {
             frame_accumulator -= frame_duration;
         }
     }
+
+    // Encerramento limpo
+    if (audio_device)
+        SDL_CloseAudioDevice(audio_device);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
     return 0;
 }
