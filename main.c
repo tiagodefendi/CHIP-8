@@ -119,13 +119,14 @@ int main(int argc, char *argv[]) {
         while (cpu_accumulator >= cpu_cycle_duration) {
             // Executa uma instrução da VM
             VM_ExecutarInstrucao(&vm);
+            // Print de debug dos registradores
+            #ifdef DEBUG
+            VM_ImprimirRegistradores(&vm);
+            #endif
             // Decrementa o acumulador de CPU
             cpu_accumulator -= cpu_cycle_duration;
         }
 
-        #ifdef DEBUG
-        VM_ImprimirRegistradores(&vm);
-        #endif
 
         // render ==========================================================================
 
