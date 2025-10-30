@@ -1,3 +1,5 @@
+#pragma once
+
 #define DEBUG 1
 
 #define DISPLAY_WIDTH 64

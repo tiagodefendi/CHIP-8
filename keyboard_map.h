@@ -1,3 +1,5 @@
+#pragma once
+
 #include <SDL2/SDL.h>
 
 uint8_t map_keyboard_keys (SDL_Keycode key);

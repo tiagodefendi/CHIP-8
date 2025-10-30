@@ -11,12 +11,12 @@ int main(int argc, char *argv[]) {
     int cpu_hz = CPU_HZ; // Frequência da CPU em Hz
     int scale = SCALE; // Fator de escala da janela
     int prog_start = PROG_START; // Endereço inicial do programa na memória
-    const char *rom_path = NULL; // Caminho para o arquivo ROM
+    char *rom_path = NULL; // Caminho para o arquivo ROM
 
     // Parse manual dos argumentos
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--help") == 0) {
-            print_help(argv[0]);
+            help();
             return 0;
         } else if (strcmp(argv[i], "--clock") == 0 && i + 1 < argc) {
             cpu_hz = atoi(argv[++i]);
@@ -27,14 +27,14 @@ int main(int argc, char *argv[]) {
             rom_path = argv[i];
         } else {
             printf("Opcao desconhecida: %s\n", argv[i]);
-            print_help(argv[0]);
+            help();
             return 1;
         }
     }
 
     if (!rom_path) {
         printf("Erro: Nenhum arquivo ROM fornecido.\n");
-        print_help(argv[0]);
+        help();
         return 1;
     }
 

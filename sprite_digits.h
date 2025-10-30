@@ -1,3 +1,5 @@
+#pragma once
+
 #include <stdint.h>
 
 const uint8_t sprite_digits[16*5] = {
