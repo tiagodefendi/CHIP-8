@@ -3,10 +3,7 @@
 #include <SDL2/SDL.h>
 #include "draw_display.h"
 #include "audio.h"
-
-// TODO: A velocidade de execução da CPU deve ser configurável via linha de comando (ex: 500Hz, 1000Hz).
-// Consideramos que cada ciclo de CPU corresponde a uma instrução executada.
-// Portanto, uma CPU rodando a 500Hz executa 500 instruções por segundo.
+#include "help.h"
 
 // TODO: A tela deve ser atualizada a uma taxa de 60Hz, independentemente da velocidade da CPU
 
@@ -15,32 +12,44 @@
 int main(int argc, char *argv[]) {
     // Configurações iniciais
     int cpu_hz = CPU_HZ; // Frequência da CPU em Hz
-    int cycle_delay = CYCLE_DELAY; // Delay entre ciclos em milissegundos
-    // caso o args 2 seja fornecido, sobrescreve cpu_hz
-    if (argc >= 3) {
-        cpu_hz = atoi(argv[2]);
-        cycle_delay = 1000 / cpu_hz;
+    int scale = SCALE; // Fator de escala da janela
+    int prog_start = PROG_START; // Endereço inicial do programa na memória
+    const char *rom_path = NULL; // Caminho para o arquivo ROM
+
+    // Parse manual dos argumentos
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--help") == 0) {
+            print_help(argv[0]);
+            return 0;
+        } else if (strcmp(argv[i], "--clock") == 0 && i + 1 < argc) {
+            cpu_hz = atoi(argv[++i]);
+        } else if (strcmp(argv[i], "--scale") == 0 && i + 1 < argc) {
+            scale = atoi(argv[++i]);
+        } else if (argv[i][0] != '-') {
+            // primeiro argumento sem "-" é o caminho da ROM
+            rom_path = argv[i];
+        } else {
+            printf("Opcao desconhecida: %s\n", argv[i]);
+            print_help(argv[0]);
+            return 1;
+        }
     }
 
-    int scale = SCALE; // Fator de escala para o display
-    // caso o args 3 seja fornecido, sobrescreve scale
-    if (argc >= 4) {
-        scale = atoi(argv[3]);
+    if (!rom_path) {
+        printf("Erro: Nenhum arquivo ROM fornecido.\n");
+        print_help(argv[0]);
+        return 1;
     }
 
-    int prog_start = PROG_START; // Endereço de início do programa
-    // caso o args 4 seja fornecido, sobrescreve prog_start
-    if (argc >= 5) {
-        prog_start = (int)strtol(argv[4], NULL, 16);
-    }
+    int cycle_delay = 1000 / cpu_hz;
 
     // Iniciar VM
     VM vm;
     VM_Inicializar(&vm, prog_start);
-    int resultado = VM_CarregarROM(&vm, argv[1], prog_start);
+    int resultado = VM_CarregarROM(&vm, rom_path, prog_start);
     // Adicionar verificação de erro ao carregar a ROM
     if (!resultado) {
-        printf("Falha ao carregar a ROM: %s\n", argv[1]);
+        printf("Falha ao carregar a ROM: %s\n", rom_path);
         return -1;
     }
     #ifdef DEBUG
