@@ -8,19 +8,22 @@
 
 void VM_Inicializar(VM* vm, uint16_t pc_inicial) {
     vm->PC = pc_inicial;
-
-    // Pré-carregar na memória os sprites dos dígitos hexadecimais (0-F)
-    // Os sprites para os dígitos hexadecimais (0-F) devem ser pré-carregados na memória, começando no endereço 0x000.
-    for (int i = 0; i < 16; i++) {
-        for (int j = 0; j < 5; j++) {
-            vm->RAM[i * 5 + j] = sprite_digits[i * 5 + j];
-        }
-    }
+    vm->I = 0;
+    vm->SP = 0;
+    vm->delay_timer = 0;
+    vm->sound_timer = 0;
+    for (int i = 0; i < 16; i++) vm->V[i] = 0;
+    for (int i = 0; i < 4096; i++) vm->RAM[i] = 0;
+    for (int i = 0; i < 64*32; i++) vm->DISPLAY[i] = 0;
+    for (int i = 0; i < 16; i++) vm->stack[i] = 0;
 }
 
 int VM_CarregarROM(VM* vm,
                     char* arq_rom,
                     uint16_t pc_inicial) {
+
+    // Pré-Carregar na Memória os Sprites
+    memcpy(&vm->RAM[0x000], sprite_digits, sizeof(sprite_digits));
 
     FILE* rom = fopen(arq_rom, "rb");
     // Verifica se o arquivo foi aberto corretamente
@@ -32,6 +35,11 @@ int VM_CarregarROM(VM* vm,
     long tam_rom = ftell(rom);
     rewind(rom);
 
+    if (pc_inicial + tam_rom > 4096) {
+        printf("Erro: ROM muito grande!\n");
+        fclose(rom);
+        return 0;
+    }
     fread(&vm->RAM[pc_inicial], 1, tam_rom, rom);
 
     fclose(rom);
@@ -207,7 +215,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Set Vx = Vx - Vy, set VF = NOT borrow.
             // If Vx > Vy, then VF is set to 1, otherwise 0.
             // Then Vy is subtracted from Vx, and the results stored in Vx.
-            if (NN == 0x5) {
+            if (N == 0x5) {
                 if(vm->V[X] > vm->V[Y]) {
                     vm->V[0xF] = 1;
                 } else {
@@ -220,9 +228,9 @@ void VM_ExecutarInstrucao(VM* vm) {
             // SHR Vx {, Vy}
             // Set Vx = Vx SHR 1.
             // If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
-            if (NN == 0x6) {
+            if (N == 0x6) {
                 vm->V[0xF] = vm->V[X] & 0x01;
-                vm->V[X] >>= 2;
+                vm->V[X] >>= 1;
                 break;
             }
 
@@ -230,7 +238,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // Set Vx = Vy - Vx, set VF = NOT borrow.
             // If Vy > Vx, then VF is set to 1, otherwise 0.
             // Then Vx is subtracted from Vy, and the results stored in Vx.
-            if (NN == 0x7) {
+            if (N == 0x7) {
                 if(vm->V[Y] > vm->V[X]) {
                     vm->V[0xF] = 1;
                 } else {
@@ -243,7 +251,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // SHL Vx {, Vy}
             //Set Vx = Vx SHL 1.
             // If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
-            if (NN == 0xE) {
+            if (N == 0xE) {
                 vm->V[0xF] = vm->V[X] & 0x80;
                 vm->V[X] <<= 1;
                 break;
@@ -300,6 +308,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // for more information on the Chip-8 screen and sprites.
             uint8_t xcoord = vm->V[X] % DISPLAY_WIDTH;
             uint8_t ycoord = vm->V[Y] % DISPLAY_HEIGHT;
+            vm->V[0xF] = 0;
             for (int row = 0; row < N; row++) {
                 uint8_t bits = vm->RAM[vm->I + row];
                 uint8_t cy = (ycoord + row) % DISPLAY_HEIGHT;
@@ -437,7 +446,7 @@ void VM_ExecutarInstrucao(VM* vm) {
             // LD [I], Vx
             // Store registers V0 through Vx in memory starting at location I.
             // The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
-            if (NN == 0x35) {
+            if (NN == 0x55) {
                 for (int reg = 0; reg <= X; reg++) {
                     vm->RAM[vm->I + reg] = vm->V[reg];
                 }
