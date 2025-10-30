@@ -58,7 +58,7 @@ void VM_ExecutarInstrucao(VM* vm) {
     uint8_t Y     = (inst & 0x00F0) >> 4; // Registrador Y (4 bits)
     uint8_t N     = inst & 0x000F;        // Nibble (4 bits)
     uint8_t NN    = inst & 0x00FF;        // Valor de 8 bits
-    uint8_t NNN   = inst & 0x0FFF;        // Endereço de 12 bits
+    uint16_t NNN   = inst & 0x0FFF;        // Endereço de 12 bits
 
     switch(grupo){
         case 0x0:

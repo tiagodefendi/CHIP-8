@@ -71,15 +71,22 @@ int main(int argc, char *argv[]) {
 
     SDL_AudioDeviceID audio_device;
     SDL_AudioSpec want = {0};
-    want.freq = 44100;
-    want.format = AUDIO_U8;
-    want.channels = 1;
-    want.samples = 2048;
+    // Configurando o audio
+    want.freq = 44100;          // taxa de amostragem padrao (44.1 kHz)
+    want.format = AUDIO_U8;     // 8 bits sem sinal
+    want.channels = 1;          // mono
+    want.samples = 2048;        // tamanho do buffer
     audio_device = SDL_OpenAudioDevice(NULL, 0, &want, NULL, 0);
     SDL_PauseAudioDevice(audio_device, 0); // habilita audio
-    uint8_t sound_buffer[4410]; // 0,1 segundo de som
-    for (int i = 0; i < 4410; i++) {
-        sound_buffer[i] = (i / 50) % 2 ? 255 : 0;
+
+    // Gerando o som em A4 (440 Hz)
+    uint8_t sound_buffer[44100]; // 1 segundo de som
+    int sample_rate = 44100;
+    int freq = 440;
+    int half_period = sample_rate / (freq * 2); // metade do ciclo da onda
+
+    for (int i = 0; i < sample_rate; i++) {
+        sound_buffer[i] = ((i / half_period) % 2) ? 255 : 0;
     }
 
     // Iniciando os Eventos e o Loop principal
@@ -135,7 +142,7 @@ int main(int argc, char *argv[]) {
             // sound timer
             if (vm.sound_timer > 0) {
                 if (SDL_GetQueuedAudioSize(audio_device) < sizeof(sound_buffer)) {
-                    play_sound(audio_device, sound_buffer);
+                    play_sound(audio_device, sound_buffer, sizeof(sound_buffer));
                 }
                 vm.sound_timer--;
             } else {
