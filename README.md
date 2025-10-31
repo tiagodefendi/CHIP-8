@@ -5,8 +5,17 @@ Este é um emulador simples de CHIP-8 escrito em C utilizando a biblioteca SDL2 
 ## Requisitos
 
 - SDL2
+```bash
+pacman -S sdl2
+```
 - gcc
+```bash
+pacman -S gcc
+```
 - make
+```bash
+pacman -S make
+```
 
 
 ## Compilação
@@ -20,10 +29,10 @@ make
 ## Execução
 Para carregar uma ROM na memória e executar o emulador, utilize o comando:
 ```bash
-./chip8_emulator <caminho_para_o_arquivo_chip8>
+./chip8_emulator <caminho_para_o_arquivo_rom_chip8>
 ```
 
-Substitua `<caminho_para_o_arquivo_chip8>` pelo caminho do arquivo CHIP-8 que deseja executar.
+Substitua `<caminho_para_o_arquivo_rom_chip8>` pelo caminho do arquivo ROM CHIP-8 que deseja executar.
 
 ### Flags opcionais
 - `--clock <velocidade>`: Define a velocidade do clock da CPU em Hz. Padrão: 500Hz.
